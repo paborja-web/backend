@@ -84,4 +84,17 @@ export class OrdersService {
 
     return this.findById(id);
   }
+
+  async deleteOrder(id: number) {
+    const [result] = await this.pool().execute<OkPacket>(
+      'DELETE FROM orders WHERE order_id = ?',
+      [id],
+    );
+
+    if (result.affectedRows === 0) {
+      throw new NotFoundException(`Order with ID ${id} not found`);
+    }
+
+    return { message: `Order with ID ${id} deleted successfully` };
+  }
 }
